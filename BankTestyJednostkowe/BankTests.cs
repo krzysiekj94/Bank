@@ -10,12 +10,20 @@ namespace BankTestyJednostkowe
     [TestClass]
     public class BankTests
     {
-        private BankType bank;
-        private Osoba osoba;
-        private Operacja operacjaDodajKlienta;
-        private Operacja operacjaOtworzProduktBankowy;
+        private BankType bank1;
+        private BankType bank2;
+        private BankType bank3;
+
+        private Klient osoba1;
+        private Klient osoba2;
+        private Operacja operacjaDodajKlienta1;
+        private Operacja operacjaDodajKlienta2;
+        private Operacja operacjaOtworzProduktBankowyOsoba1;
+        private Operacja operacjaOtworzProduktBankowyOsoba2;
         private Operacja operacjaGenerowaniaRaportu;
-        private ProduktBankowy produktBankowy;
+        private Operacja operacjaPrzelew;
+        private ProduktBankowy produktBankowyOsoba1;
+        private ProduktBankowy produktBankowyOsoba2;
         private IRaportVisitor raportFactory;
         private KIR kirBank;
 
@@ -23,117 +31,92 @@ namespace BankTestyJednostkowe
         {
             kirBank = new KIR();
 
-            bank = new BankType("Testowy Bank", kirBank);
+            bank1 = new BankType("Testowy Bank", kirBank);
+            bank2 = new BankType("Test2", kirBank);
+            bank3 = new BankType("Test3", kirBank);
 
-            osoba = new Klient("11182400431", "Dawid", "Nowak");
+            kirBank.AddBank(bank1);
+            kirBank.AddBank(bank2);
+            kirBank.AddBank(bank3);
 
-            produktBankowy = new KredytObj();
+            osoba1 = new Klient( "11182400431", "Dawid", "Nowak" );
+            osoba2 = new Klient( "94234533412", "Michał", "Szpak" );
+            produktBankowyOsoba1 = new KredytObj();
 
+            operacjaDodajKlienta1 = new DodajKlienta( osoba1, bank1 );
+            operacjaDodajKlienta2 = new DodajKlienta( osoba2, bank2 );
 
-               
-            /*    
-                Id = 2,
-                Wlasciciel = osoba,
-                Saldo = 23132,
-                DataZalozenia = new DateTime(2004, 12, 2),
-                DataZamkniecia = new DateTime(1970, 1, 1),
-                HistoriaOperacji = new List<IOperacja>()
-            };
-            */
+            operacjaOtworzProduktBankowyOsoba1 = new OtworzProduktBankowy( produktBankowyOsoba1, osoba1, bank1 );
+            operacjaOtworzProduktBankowyOsoba2 = new OtworzProduktBankowy( produktBankowyOsoba2, osoba2, bank2 );
 
-            raportFactory = new RaportTekstowyFactory();
-
-            operacjaDodajKlienta = new DodajKlienta()
-            {
-                Id = 3,
-                Czas = new DateTime(1994,12,15),
-                Opis = "Opis1",
-                Bank = bank,
-                Klient = osoba
-            };
-
-            operacjaOtworzProduktBankowy = new OtworzProduktBankowy()
-            {
-                Id = 2,
-                Bank = bank,
-                Czas = DateTime.Now,
-                Opis = "Nowy produkt bankowy",
-                Wlasciciel = osoba,
-                ProduktBankowy = produktBankowy,
-            };
-
-            operacjaGenerowaniaRaportu = new GenerujRaportDlaProduktuBankowego()
-            {
-                Id = 2,
-                Bank = bank,
-                Czas = DateTime.Now,
-                Opis = "Generowanie raportu dla produktu bankowego",
-                ProduktBankowy = produktBankowy,
-                RaportFactory = raportFactory
-            };
+            operacjaPrzelew = new PrzelewOut( produktBankowyOsoba1, produktBankowyOsoba2, 10000 );
         }
 
-        [TestMethod]
-        public void PustyProduktBankowyPowinienZwrocicAsercje()
-        {
+      [TestMethod]
+      public void CzySaldoWiekszeO10000ZlPoPrzelewie()
+      {
             WczytajDaneTestowe();
-            produktBankowy = null;
+            long SaldoPoczatkowe = produktBankowyOsoba2.Saldo;
+            long SaldoKoncowe = 0;
+            operacjaPrzelew.Wykonaj();
 
-            Assert.IsNull(produktBankowy);
-        }
+            SaldoKoncowe = produktBankowyOsoba2.Saldo;
+
+            Assert.IsTrue(SaldoPoczatkowe + 10000 == SaldoKoncowe);  
+      }
 
        [TestMethod]
        public void CzyHistoriaOperacjiNieJestNullem()
        {
             WczytajDaneTestowe();
-            Assert.IsNotNull(bank.HistoriaOperacji);
+            Assert.IsNotNull(bank1.HistoriaOperacji);
        }
 
         [TestMethod]
         public void CzyListaProduktowBankowychNieJestPusta()
         {
             WczytajDaneTestowe();
-            Assert.IsNotNull(bank.ProduktyBankowe);
+            Assert.IsNotNull(bank1.ProduktyBankowe);
         }
 
         [TestMethod]
-        public void CzyPoDodaniuNowegoKlientaListaNiepusta()
+        public void CzyPoDodaniuNowegoKlientaDoBanku1ListaNiepusta()
         {
             WczytajDaneTestowe();
-            bank.WykonajOperacje(operacjaDodajKlienta);
+            bank1.WykonajOperacje(operacjaDodajKlienta1);
 
-            Assert.IsTrue(bank.Klienci.Count > 0);
+            Assert.IsTrue( bank1.Klienci.Count > 0 );
         }
 
         [TestMethod]
-        public void CzyPoDodaniuNowegoProduktuListaProduktowBankuNiepusta()
+        public void CzyListaBanku1NiepustaPoDodaniaProduktuBankowego()
         {
             WczytajDaneTestowe();
-            bank.WykonajOperacje(operacjaOtworzProduktBankowy);
-            Assert.IsTrue(bank.ProduktyBankowe.Count > 0);
+            bank1.WykonajOperacje(operacjaOtworzProduktBankowyOsoba1);
+            Assert.IsTrue(bank1.ProduktyBankowe.Count > 0);
         }
 
         [TestMethod]
-        public void CzyPoDodaniuNowegoProduktuDoKlientaMaOnProdukt()
+        public void CzyPoDodaniuNowegoProduktuDoKlienta1MaOnProdukt()
         {
             WczytajDaneTestowe();
-            bank.WykonajOperacje(operacjaOtworzProduktBankowy);
-            Assert.IsTrue(bank.PobierzProduktyBankoweKlienta(osoba).Count > 0);
+            bank1.WykonajOperacje(operacjaOtworzProduktBankowyOsoba1);
+            Assert.IsTrue(bank1.PobierzProduktyBankoweKlienta(osoba1).Count > 0);
         }
 
         [TestMethod]
-        public void CzyListaOperacjiNiepustaPoWykonaniuOperacji()
+        public void CzyListaOperacjiBanku2NiepustaPoWykonaniuOperacji()
         {
             WczytajDaneTestowe();
-            bank.WykonajOperacje(operacjaDodajKlienta);
-            Assert.IsTrue(bank.HistoriaOperacji.Count > 0);
+            bank2.WykonajOperacje(operacjaOtworzProduktBankowyOsoba2);
+            Assert.IsTrue(bank2.HistoriaOperacji.Count > 0);
         }
         [TestMethod]
         public void CzyPoWygenerowaniuRaportuListaTaJestNiepusta()
         {
             WczytajDaneTestowe();
-            bank.WykonajOperacje(operacjaGenerowaniaRaportu);
-            Assert.IsTrue(bank.Raporty.Count > 0);
+            bank1.WykonajOperacje(operacjaGenerowaniaRaportu);
+            Assert.IsTrue(bank1.HistoriaOperacji.Count > 0);
         }
     }
 }
