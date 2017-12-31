@@ -11,7 +11,6 @@ namespace BankTestyJednostkowe
     {
         private SumaSald raportVisitor1;
         private Rachunek rachunek;
-        private Pracownik pracownik;
         private BankType bank;
         private Wyplata wyplata;
         long kwotaWyplaty;
@@ -22,7 +21,6 @@ namespace BankTestyJednostkowe
             bank = new BankType("BankTest", new KIR());
             rachunek = new Rachunek();
             wyplata = new Wyplata(rachunek, kwotaWyplaty);
-            bank.WykonajOperacje(wyplata);
             raportVisitor1 = new SumaSald();
         }
 
@@ -30,6 +28,8 @@ namespace BankTestyJednostkowe
         public void SumaWyplatRownaKwocieWyplaty()
         {
             PrzygotujDane();
+            bank.WykonajOperacje(wyplata);
+            raportVisitor1.Visit(rachunek);
             Assert.IsTrue(raportVisitor1.Calculate(bank) == kwotaWyplaty);
         }
 
@@ -41,12 +41,11 @@ namespace BankTestyJednostkowe
         }
 
         [TestMethod]
-        public void SumaWyplatPowiekszonaO200()
+        public void SumaWyplatRowna0()
         {
             PrzygotujDane();
-            bank.WykonajOperacje(new Wyplata(rachunek,200));
-            raportVisitor1.Calculate(bank);
-            Assert.IsTrue((raportVisitor1.Calculate(bank) + 200) == ( kwotaWyplaty + 200 ));
+            raportVisitor1.Visit(rachunek);
+            Assert.IsTrue((raportVisitor1.Calculate(bank)) == 0);
         }
     }
 }

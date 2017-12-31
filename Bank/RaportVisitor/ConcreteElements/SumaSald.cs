@@ -26,7 +26,7 @@
 
         public long Calculate(BankType bank)
         {
-            _sum = 0;
+           // _sum = 0;
             foreach(var pb in bank.ProduktyBankowe)
             {
                 if(pb is IProduktBankowyElement)

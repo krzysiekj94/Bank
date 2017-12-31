@@ -1,5 +1,6 @@
 ﻿using System;
 using Bank;
+using Bank.Mediator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BankTestyJednostkowe
@@ -10,36 +11,16 @@ namespace BankTestyJednostkowe
         private BankType bank;
         private Klient klient;
         private Rachunek rachunek;
-        private Wyplata wplata;
+        private long kwotaWyplaty;
+
         public void ExampleData1()
         {
-            bank = new BankType("UnitTestBank");
+            kwotaWyplaty = 1000;
+            bank = new BankType("Testowy bank", new KIR());
+            klient = new Klient("12345643212", "Jan", "Borowiak");
+            rachunek = new Rachunek();
 
-            klient = new Klient()
-            {
-                Id = 0,
-                Imie = "A",
-                Nazwisko = "B",
-                DataUrodzenia = DateTime.Now,
-                Pesel = "123213asdad",
-                Plec = "m"
-            };
-
-            rachunek = new Rachunek()
-            {
-                Id = 0,
-                Wlasciciel = klient,
-                DataZalozenia = DateTime.Now - (new TimeSpan(3, 0, 0, 0, 0)),
-                DataZamkniecia = DateTime.Now,
-                MaxDebet = 0,
-                Saldo = 2000
-            };
-
-            wplata = new Wyplata()
-            {
-                ProduktBankowy = rachunek,
-                Kwota = -123
-            };
+            bank.WykonajOperacje(new OtworzProduktBankowy(rachunek, klient, bank));
         }
 
         [TestMethod]
@@ -47,18 +28,29 @@ namespace BankTestyJednostkowe
         public void WyplataUjemnejKwotyPowinnaZwrocicAsercje()
         {
             ExampleData1();
-            bank.WykonajOperacje(wplata) ;
+            kwotaWyplaty = -10000;
+
+            Wyplata wyplata = new Wyplata(rachunek, kwotaWyplaty);
+            bank.WykonajOperacje(wyplata);
         }
 
         [TestMethod]
-        public void WyplataKwotyDodatniejZSaldaJestPoprawna()
+        public void WyplataKwotyDodatniejZSaldaNiezerowegoJestPoprawna()
         {
             ExampleData1();
+            kwotaWyplaty = 10000;
 
-            Wyplata wyplata = new Wyplata();
-            wyplata.ProduktBankowy = rachunek;
-            wyplata.Kwota = 1000;
+            Wyplata wyplata = new Wyplata(rachunek, kwotaWyplaty);
+            bank.WykonajOperacje(wyplata);
+        }
 
+        [TestMethod]
+        public void WyplataKwotyZSalda0PowinnaZwrocicAsercje()
+        {
+            ExampleData1();
+            kwotaWyplaty = 0;
+
+            Wyplata wyplata = new Wyplata(rachunek, kwotaWyplaty);
             bank.WykonajOperacje(wyplata);
         }
     }

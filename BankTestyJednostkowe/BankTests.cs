@@ -1,8 +1,5 @@
-﻿using System;
-using Bank;
+﻿using Bank;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Bank.RaportVisitor;
 using Bank.Mediator;
 
 namespace BankTestyJednostkowe
@@ -20,11 +17,9 @@ namespace BankTestyJednostkowe
         private Operacja operacjaDodajKlienta2;
         private Operacja operacjaOtworzProduktBankowyOsoba1;
         private Operacja operacjaOtworzProduktBankowyOsoba2;
-        private Operacja operacjaGenerowaniaRaportu;
         private Operacja operacjaPrzelew;
         private ProduktBankowy produktBankowyOsoba1;
         private ProduktBankowy produktBankowyOsoba2;
-        private IRaportVisitor raportFactory;
         private KIR kirBank;
 
         void WczytajDaneTestowe()
@@ -112,13 +107,6 @@ namespace BankTestyJednostkowe
             WczytajDaneTestowe();
             bank2.WykonajOperacje(operacjaOtworzProduktBankowyOsoba2);
             Assert.IsTrue(bank2.HistoriaOperacji.Count > 0);
-        }
-        [TestMethod]
-        public void CzyPoWygenerowaniuRaportuListaTaJestNiepusta()
-        {
-            WczytajDaneTestowe();
-            bank1.WykonajOperacje(operacjaGenerowaniaRaportu);
-            Assert.IsTrue(bank1.HistoriaOperacji.Count > 0);
         }
     }
 }

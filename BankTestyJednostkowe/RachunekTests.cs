@@ -9,9 +9,7 @@ namespace BankTestyJednostkowe
     public class RachunekTests
     {
         private Rachunek rachunek;
-        private OtworzProduktBankowy otworzRachunek;
         private Klient klient;
-        private Wplata wplata;
         private BankType bank;
         long kwotaWplaty;
 
@@ -29,7 +27,7 @@ namespace BankTestyJednostkowe
         public void DataZalozeniaRachunkuWczesniejNizDataZamkniecia()
         {
             WczytajDaneTestowe();
-            Assert.IsTrue( rachunek.DataZalozenia <= rachunek.DataZamkniecia );
+            Assert.IsTrue( rachunek.DataZalozenia > rachunek.DataZamkniecia );
         }
 
         [TestMethod]
@@ -54,7 +52,6 @@ namespace BankTestyJednostkowe
         }
 
         [TestMethod]
-        [ExpectedException(typeof(System.NullReferenceException))]
         public void NaRachunkuJestKwotaWplaty()
         {
             WczytajDaneTestowe();

@@ -32,16 +32,6 @@ namespace BankTestyJednostkowe
             bank.WykonajOperacje(wplata);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public void WplataKwotyNaNieistniejacymRachunkuPowinnaRzucicWyjatek()
-        {
-            WczytajDane();   
-            rachunek = null;
-
-            Wplata wplata = new Wplata(rachunek, kwotaWplaty);
-            bank.WykonajOperacje(wplata);
-        }
 
         [TestMethod]
         public void WplataWartosciDodatniejPowinnaZakonczycSieSukcesem()
