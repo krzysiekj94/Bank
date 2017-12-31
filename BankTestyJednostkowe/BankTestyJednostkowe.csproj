@@ -52,7 +52,6 @@
     <Compile Include="RachunekTests.cs" />
     <Compile Include="BankTests.cs" />
     <Compile Include="OdsetkiRachunekBankowyTests.cs" />
-    <Compile Include="RaportFactoryTests.cs" />
     <Compile Include="RaportTests.cs" />
     <Compile Include="WyplataTests.cs" />
     <Compile Include="WplataTests.cs" />

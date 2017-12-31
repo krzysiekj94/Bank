@@ -1,5 +1,6 @@
 ﻿using System;
 using Bank;
+using Bank.Mediator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BankTestyJednostkowe
@@ -9,43 +10,25 @@ namespace BankTestyJednostkowe
     {
         private BankType bank;
         private Klient klient;
-        private Rachunek rachunek; 
+        private Rachunek rachunek;
+        private long kwotaWplaty;
 
-        public void ExampleData1()
+        public void WczytajDane()
         {
-            bank = new BankType("UnitTestBank");
-
-            klient = new Klient()
-            {
-                Id = 0,
-                Imie = "A",
-                Nazwisko = "B",
-                DataUrodzenia = DateTime.Now,
-                Pesel = "123213asdad",
-                Plec = "m"
-            };
-
-            rachunek = new Rachunek()
-            {
-                Id = 0,
-                Wlasciciel = klient,
-                DataZalozenia = DateTime.Now - (new TimeSpan(3, 0, 0, 0, 0)),
-                DataZamkniecia = DateTime.Now,
-                MaxDebet = 0,
-                Saldo = 2000
-            };
+            kwotaWplaty = 0;
+            bank = new BankType("Testowy Bank", new KIR());
+            klient = new Klient("12345678987", "Krzysztof", "Nowak");
+            rachunek = new Rachunek();
+            bank.WykonajOperacje(new OtworzProduktBankowy(rachunek, klient, bank));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void WplataUjemnejKwotyPowinnaDacAsercje()
         {
-            ExampleData1();
+            WczytajDane();
+            kwotaWplaty = -1000;
 
-            Wplata wplata = new Wplata();
-            wplata.ProduktBankowy = rachunek;
-            wplata.Kwota = -123;
-            
+            Wplata wplata = new Wplata(rachunek, kwotaWplaty);            
             bank.WykonajOperacje(wplata);
         }
 
@@ -53,25 +36,19 @@ namespace BankTestyJednostkowe
         [ExpectedException(typeof(NullReferenceException))]
         public void WplataKwotyNaNieistniejacymRachunkuPowinnaRzucicWyjatek()
         {
-            ExampleData1();   
+            WczytajDane();   
             rachunek = null;
 
-            Wplata wplata = new Wplata();
-
-            wplata.ProduktBankowy = rachunek;
-            wplata.Kwota = 1234;
-
+            Wplata wplata = new Wplata(rachunek, kwotaWplaty);
             bank.WykonajOperacje(wplata);
         }
 
         [TestMethod]
         public void WplataWartosciDodatniejPowinnaZakonczycSieSukcesem()
         {
-            ExampleData1();
-            Wplata wplata = new Wplata();
-            wplata.ProduktBankowy = rachunek;
-            wplata.Kwota = 2000;
-
+            WczytajDane();
+            kwotaWplaty = 20000;
+            Wplata wplata = new Wplata(rachunek, kwotaWplaty);
             bank.WykonajOperacje( wplata );
         }
     }

@@ -41,7 +41,9 @@ namespace BankTestyJednostkowe
 
             osoba1 = new Klient( "11182400431", "Dawid", "Nowak" );
             osoba2 = new Klient( "94234533412", "Michał", "Szpak" );
+
             produktBankowyOsoba1 = new KredytObj();
+            produktBankowyOsoba2 = new Rachunek();
 
             operacjaDodajKlienta1 = new DodajKlienta( osoba1, bank1 );
             operacjaDodajKlienta2 = new DodajKlienta( osoba2, bank2 );

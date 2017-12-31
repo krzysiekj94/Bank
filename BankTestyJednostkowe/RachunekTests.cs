@@ -1,5 +1,6 @@
 ﻿using System;
 using Bank;
+using Bank.Mediator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BankTestyJednostkowe
@@ -8,34 +9,20 @@ namespace BankTestyJednostkowe
     public class RachunekTests
     {
         private Rachunek rachunek;
+        private OtworzProduktBankowy otworzRachunek;
         private Klient klient;
-        private Wyplata wyplata;
+        private Wplata wplata;
+        private BankType bank;
+        long kwotaWplaty;
 
         void WczytajDaneTestowe()
         {
+            kwotaWplaty = 2000;
+            bank = new BankType("Bank Testowy", new KIR());
+            klient = new Klient("12345678909", "Krzysiek", "Nowak");
             rachunek = new Rachunek();
-            klient = new Klient();
-            wyplata = new Wyplata();
-
-            rachunek.Id = 12;
-            rachunek.Saldo = 2000;
-            rachunek.MaxDebet = -230;
-            rachunek.DataZalozenia = new DateTime( 1994, 08, 24 );
-            rachunek.DataZamkniecia = new DateTime( 2000, 02, 12 );
-
-            klient.Imie = "Krzysztof";
-            klient.Nazwisko = "Jerzyński";
-
-            wyplata.Id = 1;
-            wyplata.Kwota = 12;
-            wyplata.Czas = new DateTime(2017, 11, 24, 15, 16, 54, 12);
-        }
-
-        [TestMethod]
-        public void StanRachunkuNieMniejszyOdMaxDebet()
-        {
-            WczytajDaneTestowe();
-            Assert.IsTrue( rachunek.Saldo >= rachunek.MaxDebet );
+            bank.WykonajOperacje(new OtworzProduktBankowy(rachunek, klient, bank));
+            bank.WykonajOperacje(new Wplata(rachunek,kwotaWplaty));
         }
 
         [TestMethod]
@@ -68,10 +55,10 @@ namespace BankTestyJednostkowe
 
         [TestMethod]
         [ExpectedException(typeof(System.NullReferenceException))]
-        public void OperacjaNaRachunkuZakonczonaPowodzeniem()
+        public void NaRachunkuJestKwotaWplaty()
         {
             WczytajDaneTestowe();
-            rachunek.WykonajOperacje( wyplata );
+            Assert.IsTrue(rachunek.Saldo == kwotaWplaty);
         }
     }
 }
