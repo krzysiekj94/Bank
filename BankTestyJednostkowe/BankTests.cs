@@ -10,7 +10,6 @@ namespace BankTestyJednostkowe
         private BankType bank1;
         private BankType bank2;
         private BankType bank3;
-
         private Klient osoba1;
         private Klient osoba2;
         private Operacja operacjaDodajKlienta1;

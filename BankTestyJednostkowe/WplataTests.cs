@@ -23,6 +23,7 @@ namespace BankTestyJednostkowe
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void WplataUjemnejKwotyPowinnaDacAsercje()
         {
             WczytajDane();
@@ -31,7 +32,17 @@ namespace BankTestyJednostkowe
             Wplata wplata = new Wplata(rachunek, kwotaWplaty);            
             bank.WykonajOperacje(wplata);
         }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WplataNaNieistniejacyRachunekPowinienDacAsercje()
+        {
+            WczytajDane();
+            kwotaWplaty = 1000;
 
+            Rachunek produktBankowy = null;
+            Wplata wplata = new Wplata(produktBankowy, kwotaWplaty);
+        }
 
         [TestMethod]
         public void WplataWartosciDodatniejPowinnaZakonczycSieSukcesem()

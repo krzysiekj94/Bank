@@ -17,7 +17,7 @@ namespace BankTestyJednostkowe
 
         void PrzygotujDane()
         {
-            kwotaWyplaty = 10000;
+            kwotaWyplaty = 1200;
             bank = new BankType("BankTest", new KIR());
             rachunek = new Rachunek();
             wyplata = new Wyplata(rachunek, kwotaWyplaty);
@@ -30,7 +30,7 @@ namespace BankTestyJednostkowe
             PrzygotujDane();
             bank.WykonajOperacje(wyplata);
             raportVisitor1.Visit(rachunek);
-            Assert.IsTrue(raportVisitor1.Calculate(bank) == kwotaWyplaty);
+            Assert.IsTrue( Math.Abs(raportVisitor1.Calculate(bank)) == kwotaWyplaty );
         }
 
         [TestMethod]
