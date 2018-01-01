@@ -52,7 +52,7 @@
     <Compile Include="RachunekTests.cs" />
     <Compile Include="BankTests.cs" />
     <Compile Include="OdsetkiRachunekBankowyTests.cs" />
-    <Compile Include="PrzelewTests.cs" />
+    <Compile Include="PrzelewMiedzybankowyTests.cs" />
     <Compile Include="DodanieKlientaTests.cs" />
     <Compile Include="OtworzProduktBankowyTests.cs" />
     <Compile Include="SumaSaldTests.cs" />
