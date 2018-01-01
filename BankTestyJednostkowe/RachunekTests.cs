@@ -11,16 +11,13 @@ namespace BankTestyJednostkowe
         private Rachunek rachunek;
         private Klient klient;
         private BankType bank;
-        long kwotaWplaty;
 
         void WczytajDaneTestowe()
         {
-            kwotaWplaty = 2000;
             bank = new BankType("Bank Testowy", new KIR());
             klient = new Klient("12345678909", "Krzysiek", "Nowak");
             rachunek = new Rachunek();
-            bank.WykonajOperacje(new OtworzProduktBankowy(rachunek, klient, bank));
-            bank.WykonajOperacje(new Wplata(rachunek,kwotaWplaty));
+            rachunek.Wlasciciel = klient;
         }
 
         [TestMethod]
@@ -34,14 +31,14 @@ namespace BankTestyJednostkowe
         public void ImieWlascielaRachunkuJestNiepuste()
         {
             WczytajDaneTestowe();
-            Assert.IsTrue( klient.Imie.Length > 0 );
+            Assert.IsTrue( rachunek.Wlasciciel.Imie.Length > 0 );
         }
 
         [TestMethod]
         public void NazwiskoWlascicielaRachunkuJestNiepuste()
         {
             WczytajDaneTestowe();
-            Assert.IsTrue( klient.Nazwisko.Length > 0 );
+            Assert.IsTrue(rachunek.Wlasciciel.Nazwisko.Length > 0 );
         }
 
         [TestMethod]
@@ -52,10 +49,17 @@ namespace BankTestyJednostkowe
         }
 
         [TestMethod]
-        public void NaRachunkuJestKwotaWplaty()
+        public void PoczatkoweKontoRachukuRowne0()
         {
             WczytajDaneTestowe();
-            Assert.IsTrue(rachunek.Saldo == kwotaWplaty);
+            Assert.IsTrue(rachunek.Saldo == 0);
+        }
+
+        [TestMethod]
+        public void DlugoscPeseluRowna11()
+        {
+            WczytajDaneTestowe();
+            Assert.IsTrue(rachunek.Wlasciciel.Pesel.Length == 11);
         }
     }
 }
