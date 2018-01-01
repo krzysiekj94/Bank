@@ -53,6 +53,11 @@
     <Compile Include="BankTests.cs" />
     <Compile Include="OdsetkiRachunekBankowyTests.cs" />
     <Compile Include="RaportTests.cs" />
+    <Compile Include="PrzelewTests.cs" />
+    <Compile Include="DodanieKlientaTests.cs" />
+    <Compile Include="OtworzProduktBankowyTests.cs" />
+    <Compile Include="SumaSaldTests.cs" />
+    <Compile Include="SumaZadluzeniaTests.cs" />
     <Compile Include="WyplataTests.cs" />
     <Compile Include="WplataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
